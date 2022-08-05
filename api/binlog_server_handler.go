@@ -61,6 +61,11 @@ func (h *BinlogServerHandler) GetBinlogServerStatus(echoCtx echo.Context) error 
 
 	status := h.svr.GetServerStatus(config.BinlogServerType)
 	if masterStatus, ok := status.(*config.BinlogServerStatus); ok {
+		// Check log when debug mode enable
+		log.Log.Debugf("Binlog Server Username: %s Password: %s", masterStatus.User, masterStatus.Password)
+		// Disable sensitive information
+		masterStatus.User = "***"
+		masterStatus.Password = "***"
 		return echoCtx.JSON(http.StatusOK, utils.NewResp().SetData(masterStatus))
 	}
 	return echoCtx.JSON(http.StatusInternalServerError, utils.NewResp().SetError("no resp"))

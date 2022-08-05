@@ -167,6 +167,11 @@ func (h *BinlogSyncerHandler) GetBinlogSyncerStatus(echoCtx echo.Context) error 
 
 	status := h.svr.GetServerStatus(config.SyncerServerType)
 	if syncerStatus, ok := status.(*config.SyncerStatus); ok {
+		// Enable log user and password in debug mode
+		log.Log.Debugf("Syncer Server Username: %s Password: %s", syncerStatus.MysqlUser, syncerStatus.MysqlPassword)
+		// Disable sensitive information
+		syncerStatus.MysqlUser = "***"
+		syncerStatus.MysqlPassword = "***"
 		return echoCtx.JSON(http.StatusOK, utils.NewResp().SetData(syncerStatus))
 	}
 	return echoCtx.JSON(http.StatusInternalServerError, utils.NewResp().SetError("no resp"))
