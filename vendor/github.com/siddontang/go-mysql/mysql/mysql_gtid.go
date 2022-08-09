@@ -10,7 +10,7 @@ import (
 	"strings"
 
 	"github.com/juju/errors"
-	"github.com/satori/go.uuid"
+	uuid "github.com/satori/go.uuid"
 	"github.com/siddontang/go/hack"
 )
 
@@ -353,13 +353,13 @@ func (s *MysqlGTIDSet) AddSet(set *UUIDSet) {
 }
 
 func (s *MysqlGTIDSet) Update(GTIDStr string) error {
-	uuidSet, err := ParseUUIDSet(GTIDStr)
+	gtidSet, err := ParseMysqlGTIDSet(GTIDStr)
 	if err != nil {
 		return err
 	}
-
-	s.AddSet(uuidSet)
-
+	for _, uuidSet := range gtidSet.(*MysqlGTIDSet).Sets {
+		s.AddSet(uuidSet)
+	}
 	return nil
 }
 
